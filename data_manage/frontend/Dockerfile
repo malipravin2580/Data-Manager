@@ -11,7 +11,7 @@ FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY frontend/nginx.conf /etc/nginx/templates/default.conf.template
 
-ENV API_PROXY_HOSTPORT=backend:8000
+ENV API_PROXY_HOST=localhost
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

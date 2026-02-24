@@ -18,8 +18,8 @@ services:
     plan: free
     autoDeploy: true
     envVars:
-      - key: API_PROXY_HOSTPORT
+      - key: API_PROXY_HOST
         fromService:
           type: web
           name: data-manage-backend
-          property: hostport
+          property: host

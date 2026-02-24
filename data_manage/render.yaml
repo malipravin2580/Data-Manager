@@ -18,8 +18,5 @@ services:
     plan: free
     autoDeploy: true
     envVars:
-      - key: API_PROXY_HOST
-        fromService:
-          type: web
-          name: data-manage-backend
-          property: host
+      - key: API_PROXY_URL
+        value: https://data-manage-backend.onrender.com

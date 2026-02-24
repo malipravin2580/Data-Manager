@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: data-manage-backend
+    env: docker
+    rootDir: .
+    dockerfilePath: ./backend/Dockerfile
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+
+  - type: web
+    name: data-manage-frontend
+    env: docker
+    rootDir: .
+    dockerfilePath: ./frontend/Dockerfile
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: API_PROXY_TARGET
+        fromService:
+          type: web
+          name: data-manage-backend
+          property: url

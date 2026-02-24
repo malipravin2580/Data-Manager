@@ -20,3 +20,5 @@ services:
     envVars:
       - key: API_PROXY_URL
         value: https://data-manage-backend.onrender.com
+      - key: API_PROXY_HOST
+        value: data-manage-backend.onrender.com

@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30 * 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
-    DATABASE_URL: str = "postgresql+psycopg2://datamanager:datamanager@localhost:5433/datamanager"
-    REDIS_URL: str = "redis://localhost:6379/0"
+    DATABASE_URL: str = "postgresql+psycopg2://datamanager:datamanager@postgres:5432/datamanager"
+    REDIS_URL: str = "redis://redis:6379/0"
 
     DATA_DIR: Path = Path("./data")
     MAX_FILE_SIZE: int = 100 * 1024 * 1024

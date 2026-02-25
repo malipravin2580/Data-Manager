@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 import { ArrowDownTrayIcon, DocumentIcon, TrashIcon } from '@heroicons/react/24/outline'
 import type { MouseEvent } from 'react'
 import { useDeleteFile } from '@/hooks/useFiles'
-import { fileApi } from '@/services/api'
+import { filesApi } from '@/services/api'
 import { FileInfo } from '@/types'
 
 interface FileListProps {
@@ -14,21 +14,24 @@ interface FileListProps {
 export default function FileList({ files, selectedFile, onSelectFile }: FileListProps) {
   const deleteMutation = useDeleteFile()
 
-  const formatSize = (mb: number) => {
-    if (mb < 1) return `${(mb * 1024).toFixed(1)} KB`
+  const formatSize = (bytes: number | null) => {
+    if (!bytes) return 'N/A'
+    const mb = bytes / (1024 * 1024)
+    if (mb < 1) return `${(bytes / 1024).toFixed(1)} KB`
     return `${mb.toFixed(2)} MB`
   }
 
-  const getFileIcon = (type: string) => {
+  const getFileIcon = (path: string) => {
+    const type = path.split('.').pop()?.toLowerCase()
     switch (type) {
-      case '.csv':
+      case 'csv':
         return 'CSV'
-      case '.json':
+      case 'json':
         return 'JSON'
-      case '.xlsx':
-      case '.xls':
+      case 'xlsx':
+      case 'xls':
         return 'XLS'
-      case '.parquet':
+      case 'parquet':
         return 'PQT'
       default:
         return 'FILE'
@@ -44,7 +47,7 @@ export default function FileList({ files, selectedFile, onSelectFile }: FileList
 
   const handleDownload = async (e: MouseEvent, filename: string) => {
     e.stopPropagation()
-    const blob = await fileApi.download(filename)
+    const blob = await filesApi.download(filename)
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -78,25 +81,25 @@ export default function FileList({ files, selectedFile, onSelectFile }: FileList
           {files.map((file) => (
             <tr
               key={file.name}
-              onClick={() => onSelectFile(file.name)}
-              className={`cursor-pointer transition-colors ${selectedFile === file.name ? 'bg-primary-50' : 'hover:bg-gray-50'}`}
+              onClick={() => onSelectFile(file.path)}
+              className={`cursor-pointer transition-colors ${selectedFile === file.path ? 'bg-primary-50' : 'hover:bg-gray-50'}`}
             >
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   <span className="text-xs mr-2 px-1.5 py-0.5 rounded bg-gray-100 text-gray-700">
-                    {getFileIcon(file.type)}
+                    {getFileIcon(file.path)}
                   </span>
                   <span className="text-sm font-medium text-gray-900">{file.name}</span>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatSize(file.size_mb)}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{file.rows?.toLocaleString() ?? 'N/A'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatSize(file.size)}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">N/A</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {file.modified ? format(new Date(file.modified), 'MMM dd, yyyy HH:mm') : 'N/A'}
+                {file.modified ? format(new Date(file.modified * 1000), 'MMM dd, yyyy HH:mm') : 'N/A'}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
-                  onClick={(e) => handleDelete(e, file.name)}
+                  onClick={(e) => handleDelete(e, file.path)}
                   className="text-red-600 hover:text-red-900 p-1"
                   title="Delete"
                 >
@@ -104,7 +107,7 @@ export default function FileList({ files, selectedFile, onSelectFile }: FileList
                 </button>
                 <button
                   onClick={(e) => {
-                    void handleDownload(e, file.name)
+                    void handleDownload(e, file.path)
                   }}
                   className="text-gray-600 hover:text-gray-900 p-1 ml-2"
                   title="Download"

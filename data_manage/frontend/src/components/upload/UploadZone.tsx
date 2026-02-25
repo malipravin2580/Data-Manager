@@ -3,16 +3,27 @@ import { useDropzone } from 'react-dropzone'
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
 import { useUploadFile } from '@/hooks/useFiles'
 
-export default function UploadZone() {
+interface UploadZoneProps {
+  onUploaded?: () => void
+}
+
+export default function UploadZone({ onUploaded }: UploadZoneProps) {
   const uploadMutation = useUploadFile()
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       acceptedFiles.forEach((file) => {
-        uploadMutation.mutate({ file })
+        uploadMutation.mutate(
+          { file },
+          {
+            onSuccess: () => {
+              onUploaded?.()
+            }
+          }
+        )
       })
     },
-    [uploadMutation]
+    [uploadMutation, onUploaded]
   )
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({

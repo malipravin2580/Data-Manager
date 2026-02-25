@@ -1,4 +1,20 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: datamanager
+      POSTGRES_PASSWORD: datamanager          # Password is "datamanager"
+      POSTGRES_DB: datamanager
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"                          # Changed to avoid port conflict
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
   backend:
     build:
       context: .
@@ -9,7 +25,13 @@ services:
       - ./data:/app/backend/data
     environment:
       - PYTHONUNBUFFERED=1
+      - SECRET_KEY=your-super-secret-key-change-in-production
+      - DATABASE_URL=postgresql://datamanager:datamanager@postgres/datamanager  # ✅ FIXED: Same password
+      - REDIS_URL=redis://redis:6379/0
     restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
 
   frontend:
     build:
@@ -23,3 +45,4 @@ services:
 
 volumes:
   data:
+  postgres_data:

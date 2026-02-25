@@ -7,7 +7,7 @@ import {
   TableCellsIcon
 } from '@heroicons/react/24/outline'
 import { useStats } from '@/hooks/useFiles'
-import { fileApi } from '@/services/api'
+import { filesApi } from '@/services/api'
 import { DataPreview as DataPreviewType, ExportFormat } from '@/types'
 import ColumnStats from './ColumnStats'
 import DataTable from './DataTable'
@@ -27,7 +27,7 @@ export default function DataPreview({ data, filename }: DataPreviewProps) {
   const { data: stats } = useStats(filename)
 
   const handleExport = async () => {
-    const blob = await fileApi.export(filename, exportFormat)
+    const blob = await filesApi.download(filename)
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url

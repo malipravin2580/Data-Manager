@@ -1,6 +1,12 @@
 import { Cog6ToothIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { User } from '@/types'
 
-export default function Header() {
+interface HeaderProps {
+  user?: User | null
+  onLogout?: () => void
+}
+
+export default function Header({ user, onLogout }: HeaderProps) {
   return (
     <header className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,6 +29,14 @@ export default function Header() {
             <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
               <Cog6ToothIcon className="h-5 w-5" />
             </button>
+            {user && onLogout && (
+              <button
+                onClick={onLogout}
+                className="text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700"
+              >
+                Logout ({user.username})
+              </button>
+            )}
           </div>
         </div>
       </div>

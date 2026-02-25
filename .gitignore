@@ -53,3 +53,6 @@ logs/
 
 # Dependencies (use requirements.txt instead)
 Pipfile.lock
+.pytest_cache/
+# Node.js
+node_modules/

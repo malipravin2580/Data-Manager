@@ -23,11 +23,10 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/backend/data
+    env_file:
+      - ./backend/.env.docker
     environment:
       - PYTHONUNBUFFERED=1
-      - SECRET_KEY=your-super-secret-key-change-in-production
-      - DATABASE_URL=postgresql+psycopg2://datamanager:datamanager@postgres:5432/datamanager
-      - REDIS_URL=redis://redis:6379/0
     restart: unless-stopped
     depends_on:
       - postgres

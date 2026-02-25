@@ -16,6 +16,7 @@ Fullstack data manager with:
 
 ```bash
 cd backend
+cp .env.example .env
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -42,6 +43,11 @@ docker compose up --build
 
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:8000`
+
+Notes:
+- `backend/.env` is for local backend runs (uses `localhost` services).
+- `backend/.env.docker` is for Docker Compose backend (uses `postgres`/`redis` service names).
+- On Render, set `DATABASE_URL` and `REDIS_URL` in Render service environment variables.
 
 ## Existing Package Tests
 
